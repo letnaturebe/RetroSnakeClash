@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Net.Sockets;
 using FreeNet;
 
 namespace SnakeServer;
@@ -55,7 +56,18 @@ public class PeerUser : IPeer, ISendable
 
     void IPeer.Disconnect()
     {
-        _token.Socket!.Disconnect(false);
+        try
+        {
+            _token.Socket?.Shutdown(SocketShutdown.Both);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Shutdown error: {e.Message}");
+        }
+        finally
+        {
+            _token.Socket?.Close();
+        }
     }
 
     void IPeer.ProcessUserOperation(CPacket msg)
