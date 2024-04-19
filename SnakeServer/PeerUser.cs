@@ -58,6 +58,7 @@ public class PeerUser : IPeer, ISendable
         try
         {
             _token.Socket?.Shutdown(SocketShutdown.Both);
+            _token.OnRemoved();
         }
         catch (Exception e)
         {

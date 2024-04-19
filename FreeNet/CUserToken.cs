@@ -84,10 +84,7 @@ namespace FreeNet
 
                 if (Socket.Connected == false)
                 {
-                    while (_sendingQueue.Count > 0)
-                    {
-                        _sendingQueue.Dequeue();
-                    }
+                    _sendingQueue.Clear();
                     return;
                 }
 
