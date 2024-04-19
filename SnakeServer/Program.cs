@@ -40,7 +40,6 @@ namespace SnakeServer
                         }
                         GameServerManager.Instance.RemoveMatchWaiting(user);
                         ((IPeer)user).Disconnect();
-                        UserList.RemoveAt(i);
                     }
                 }
             }
