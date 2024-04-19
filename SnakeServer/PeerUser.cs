@@ -10,11 +10,9 @@ public class PeerUser : IPeer, ISendable
     public CGameRoom? BattleRoom { get; private set; }
 
     public UserPlayer? Player { get; private set; }
+    private readonly Heartbeat _heartbeat;
 
-    public bool IsDisconnected
-    {
-        get { return _latestHeartbeatTime + (Heartbeat.MAX_HEARTBEAT_SEC + 2) * 10000000 < DateTime.Now.Ticks; }
-    }
+    public bool IsDisconnected => _latestHeartbeatTime + (Heartbeat.MAX_HEARTBEAT_SEC + 2) * 10000000 < DateTime.Now.Ticks;
 
     private long _latestHeartbeatTime = DateTime.Now.Ticks;
 
@@ -22,7 +20,7 @@ public class PeerUser : IPeer, ISendable
     {
         _token = token;
         _token.SetPeer(this);
-        var heartbeat = new Heartbeat(0, OnHeartbeatSend);
+        _heartbeat = new Heartbeat(0, OnHeartbeatSend);
     }
 
     private void OnHeartbeatSend()
@@ -42,6 +40,7 @@ public class PeerUser : IPeer, ISendable
     void IPeer.OnRemoved()
     {
         Console.WriteLine("The client disconnected.");
+        _heartbeat.Disable();
         Program.RemoveUser(this);
     }
 

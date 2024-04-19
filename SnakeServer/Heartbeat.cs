@@ -19,4 +19,8 @@ public class Heartbeat
     {
         _onTimer();
     }
+    public void Disable()
+    {
+        _timer.Dispose();
+    }
 }
