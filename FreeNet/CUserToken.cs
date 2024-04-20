@@ -74,6 +74,7 @@ namespace FreeNet
         {
             Debug.Assert(SendEventArgs != null, "SendEventArgs != null");
             Debug.Assert(Socket != null, "Socket != null");
+            Console.WriteLine("StartSend");
 
             lock (_sendingQueueLock)
             {

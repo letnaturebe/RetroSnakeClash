@@ -18,6 +18,7 @@ public class PeerUser : IPeer, ISendable
 
     public PeerUser(CUserToken token)
     {
+        Console.WriteLine("New user connected.");
         _token = token;
         _token.SetPeer(this);
         _heartbeat = new Heartbeat(0, OnHeartbeatSend);
@@ -34,6 +35,7 @@ public class PeerUser : IPeer, ISendable
         byte[] clone = new byte[1024];
         Array.Copy(buffer, clone, buffer.Length);
         CPacket msg = new CPacket(clone, this);
+        Console.WriteLine($"Received: {msg.protocol_id}");
         GameServerManager.Instance.EnqueuePacket(msg);
     }
 
