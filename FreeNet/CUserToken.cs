@@ -43,6 +43,11 @@ namespace FreeNet
             }
 
             Debug.Assert(Socket != null, "Socket != null");
+            try
+            {
+                Socket.Shutdown(SocketShutdown.Send);
+            }
+            catch (Exception) { }
             Socket.Close();
             _peer?.OnRemoved();
         }

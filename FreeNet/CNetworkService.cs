@@ -69,7 +69,7 @@ namespace FreeNet
         private void OnNewClient(Socket clientSocket, object token)
         {
             Debug.Assert(_sessionCreatedCallback != null, nameof(_sessionCreatedCallback) + " != null");
-
+            Console.WriteLine("Client is connected.");
             SocketAsyncEventArgs receiveArgs = _receiveEventArgsPool.Pop();
             SocketAsyncEventArgs sendArgs = _sendEventArgsPool.Pop();
 
@@ -117,6 +117,8 @@ namespace FreeNet
 
         private void ProcessReceive(SocketAsyncEventArgs e)
         {
+            Console.WriteLine("ProcessReceive");
+
             CUserToken token = (CUserToken)e.UserToken!;
             if (e.BytesTransferred > 0 && e.SocketError == SocketError.Success)
             {
