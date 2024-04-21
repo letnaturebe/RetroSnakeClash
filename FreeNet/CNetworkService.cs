@@ -143,8 +143,13 @@ namespace FreeNet
             }
         }
 
-        public void CloseClientSocket(CUserToken token)
+        public void CloseClientSocket(CUserToken? token)
         {
+            if (token == null)  // token is already removed.
+            {
+                return;
+            }
+
             _receiveEventArgsPool.Push(token.ReceiveEventArgs!);
             _sendEventArgsPool.Push(token.SendEventArgs!);
             token.OnRemoved();
