@@ -79,7 +79,6 @@ namespace FreeNet
         private void StartSend()
         {
             Debug.Assert(SendEventArgs != null, "SendEventArgs != null");
-            Debug.Assert(Socket != null, "Socket != null");
             Console.WriteLine("StartSend");
 
             lock (_sendingQueueLock)
@@ -94,7 +93,7 @@ namespace FreeNet
                     SendEventArgs.Offset,
                     msg.position);
 
-                if (Socket.Connected == false)
+                if (Socket == null || Socket.Connected == false)
                 {
                     _sendingQueue.Clear();
                     return;
