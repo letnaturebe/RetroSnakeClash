@@ -54,6 +54,7 @@ namespace FreeNet
             SendEventArgs!.UserToken = null;
             SendEventArgs = null;
             ReceiveEventArgs = null;
+            Socket = null;
             _peer?.OnRemoved();
         }
 

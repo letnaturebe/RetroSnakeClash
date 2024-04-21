@@ -147,6 +147,13 @@ namespace FreeNet
         {
             if (token == null)  // token is already removed.
             {
+                Console.WriteLine("Token is null.");
+                return;
+            }
+
+            if (token.Socket == null)
+            {
+                Console.WriteLine("Socket is null");
                 return;
             }
 
