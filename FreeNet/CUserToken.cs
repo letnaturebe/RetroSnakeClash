@@ -43,12 +43,17 @@ namespace FreeNet
             }
 
             Debug.Assert(Socket != null, "Socket != null");
+
             try
             {
                 Socket.Shutdown(SocketShutdown.Send);
             }
             catch (Exception) { }
             Socket.Close();
+            ReceiveEventArgs!.UserToken = null;
+            SendEventArgs!.UserToken = null;
+            SendEventArgs = null;
+            ReceiveEventArgs = null;
             _peer?.OnRemoved();
         }
 

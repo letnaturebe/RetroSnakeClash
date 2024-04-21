@@ -6,11 +6,11 @@ namespace SnakeServer
     {
         private static readonly object UserListLock = new();
         private static readonly List<PeerUser> UserList = new(512);
+        private static readonly CNetworkService service = new(OnSessionCreated);
 
         static void Main(string[] args)
         {
             CPacketBufferManager.initialize(1024);
-            CNetworkService service = new CNetworkService(OnSessionCreated);
             service.Listen("0.0.0.0", 7979, 100);
             var heartbeatTimer = new Timer
                 (CheckHeartbeat, null, Heartbeat.MAX_HEARTBEAT_SEC * 1000, Heartbeat.MAX_HEARTBEAT_SEC * 1000);
@@ -39,7 +39,7 @@ namespace SnakeServer
                             CGameRoomManager.Instance.RemoveRoom(room);
                         }
                         GameServerManager.Instance.RemoveMatchWaiting(user);
-                        ((IPeer)user).Disconnect();
+                        service.CloseClientSocket(user.UserToken!);
                     }
                 }
             }

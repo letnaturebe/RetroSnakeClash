@@ -14,7 +14,7 @@ public class CGameRoom
     public readonly Stopwatch Stopwatch = new();
     public bool IsGameOver => _collidedPlayers.Count > 0;
 
-    private const float _updateTime = 0.15f;
+    private const float _updateTime = 0.175f;
     private readonly object _roomLock = new();
     private readonly List<Player> _players = new(2);
     private IThinkable? _thinkable;

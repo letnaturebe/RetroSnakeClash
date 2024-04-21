@@ -26,12 +26,11 @@ namespace FreeNet
 
             for (int i = 0; i < MAX_CONNECTION_COUNT; i++)
             {
-                CUserToken token = new CUserToken();
                 SocketAsyncEventArgs socketAsyncEventArgs;
                 {
                     socketAsyncEventArgs = new SocketAsyncEventArgs();
                     socketAsyncEventArgs.Completed += ReceiveCompleted;
-                    socketAsyncEventArgs.UserToken = token;
+                    socketAsyncEventArgs.UserToken = null;
                     _bufferManager.SetBuffer(socketAsyncEventArgs);
                     _receiveEventArgsPool.Push(socketAsyncEventArgs);
                 }
@@ -39,7 +38,7 @@ namespace FreeNet
                 {
                     socketAsyncEventArgs = new SocketAsyncEventArgs();
                     socketAsyncEventArgs.Completed += SendCompleted;
-                    socketAsyncEventArgs.UserToken = token;
+                    socketAsyncEventArgs.UserToken = null;
                     _bufferManager.SetBuffer(socketAsyncEventArgs);
                     _sendEventArgsPool.Push(socketAsyncEventArgs);
                 }
@@ -73,7 +72,13 @@ namespace FreeNet
             SocketAsyncEventArgs receiveArgs = _receiveEventArgsPool.Pop();
             SocketAsyncEventArgs sendArgs = _sendEventArgsPool.Pop();
 
-            CUserToken userToken = (CUserToken)receiveArgs.UserToken!;
+            Debug.Assert(receiveArgs != null, nameof(receiveArgs) + " != null");
+            Debug.Assert(sendArgs != null, nameof(sendArgs) + " != null");
+
+            var userToken = new CUserToken();
+            userToken.SetEventArgs(receiveArgs, sendArgs);
+            receiveArgs.UserToken = userToken;
+            sendArgs.UserToken = userToken;
             _sessionCreatedCallback(userToken);
             BeginReceive(clientSocket, receiveArgs, sendArgs);
         }
@@ -138,11 +143,11 @@ namespace FreeNet
             }
         }
 
-        private void CloseClientSocket(CUserToken token)
+        public void CloseClientSocket(CUserToken token)
         {
-            token.OnRemoved();
             _receiveEventArgsPool.Push(token.ReceiveEventArgs!);
             _sendEventArgsPool.Push(token.SendEventArgs!);
+            token.OnRemoved();
         }
     }
 }

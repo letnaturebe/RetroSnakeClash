@@ -6,7 +6,7 @@ namespace SnakeServer;
 
 public class PeerUser : IPeer, ISendable
 {
-    private readonly CUserToken _token;
+    public CUserToken UserToken { get; private set; }
     public CGameRoom? BattleRoom { get; private set; }
 
     public UserPlayer? Player { get; private set; }
@@ -19,8 +19,8 @@ public class PeerUser : IPeer, ISendable
     public PeerUser(CUserToken token)
     {
         Console.WriteLine("New user connected.");
-        _token = token;
-        _token.SetPeer(this);
+        UserToken = token;
+        UserToken.SetPeer(this);
         _heartbeat = new Heartbeat(0, OnHeartbeatSend);
     }
 
@@ -48,27 +48,10 @@ public class PeerUser : IPeer, ISendable
 
     public void Send(CPacket msg, bool dispose = true)
     {
-        _token.Send(msg);
+        UserToken.Send(msg);
         if (dispose)
         {
             CPacket.Destroy(msg);
-        }
-    }
-
-    void IPeer.Disconnect()
-    {
-        try
-        {
-            _token.Socket?.Shutdown(SocketShutdown.Both);
-            _token.OnRemoved();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine($"Shutdown error: {e.Message}");
-        }
-        finally
-        {
-            _token.Socket?.Close();
         }
     }
 
