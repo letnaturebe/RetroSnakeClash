@@ -42,14 +42,12 @@ namespace FreeNet
                 _sendingQueue.Clear();
             }
 
-            Debug.Assert(Socket != null, "Socket != null");
-
             try
             {
-                Socket.Shutdown(SocketShutdown.Send);
+                Socket?.Shutdown(SocketShutdown.Send);
             }
             catch (Exception) { }
-            Socket.Close();
+            Socket?.Close();
             ReceiveEventArgs!.UserToken = null;
             SendEventArgs!.UserToken = null;
             SendEventArgs = null;
